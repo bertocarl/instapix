@@ -1,0 +1,16 @@
+confusable-homoglyphs==3.2.0
+Django==1.11.17
+django-registration==2.4.1
+pep8==1.7.1
+pytz==2018.9
+bootstrap4==0.0.5
+config==0.3.9
+dj-database-url==0.5.0
+django-bootstrap3==10.0.1
+django-forms-bootstrap==3.1.0
+django-heroku==0.3.1
+gunicorn==19.9.0
+Pillow==5.2.0
+psycopg2==2.7.5
+python-decouple==3.1
+whitenoise==3.3.1
