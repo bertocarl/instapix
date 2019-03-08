@@ -1,1 +1,1 @@
-web: gunicorn pixel.wsgi --log-file -
+web: gunicorn instaclone.wsgi --log-file -
