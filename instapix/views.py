@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import User
-from .forms import *
+from .forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm
+from .models import User, PostModel, LikeModel, CommentModel
 from django.contrib.auth import authenticate, login, logout as dlogout
 
 

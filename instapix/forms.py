@@ -1,16 +1,16 @@
 from django import forms
-from models import UserModel, PostModel, LikeModel, CommentModel
+from .models import User, PostModel, LikeModel, CommentModel
 from django.contrib.auth import authenticate, login, logout, get_user_model
 
 
 class SignUpForm(forms.ModelForm):
     class Meta:
-        model = UserModel
-        fields=['email','username','name','password']
+        model = User
+        fields=['email','username','password']
 
 class LoginForm(forms.ModelForm):
     class Meta:
-        model = UserModel
+        model = User
         fields = ['username', 'password']
 
 class PostForm(forms.ModelForm):

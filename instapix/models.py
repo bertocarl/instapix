@@ -9,7 +9,7 @@ class Profile(models.Model):
         return f'{self.user.username} Profile'
 
 class PostModel(models.Model):
-	user = models.ForeignKey(UserModel)
+	user = models.ForeignKey(User)
 	image = models.FileField(upload_to='user_images')
 	image_url = models.CharField(max_length=255)
 	caption = models.CharField(max_length=240)
@@ -27,14 +27,14 @@ class PostModel(models.Model):
 		return CommentModel.objects.filter(post=self).order_by('created_on')
 
 class LikeModel(models.Model):
-	user = models.ForeignKey(UserModel)
+	user = models.ForeignKey(User)
 	post = models.ForeignKey(PostModel)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 
 
 class CommentModel(models.Model):
-	user = models.ForeignKey(UserModel)
+	user = models.ForeignKey(User)
 	post = models.ForeignKey(PostModel)
 	comment_text = models.CharField(max_length=555)
 	created_on = models.DateTimeField(auto_now_add=True)
