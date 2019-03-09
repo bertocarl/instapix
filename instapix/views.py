@@ -11,7 +11,7 @@ def signup(request):
 def home(request):
 	context = {}
 	if request.user.is_authenticated:
-		u = User.objects.filter(username=request.user.username)[0]
+		user = User.objects.filter(username=request.user.username)[0]
 		if u.profilepic == "":
 			u.profilepic = "static/assets/img/default.png"
 		context = { 'user': request.user, 'ProfilePic': u.profilepic }

@@ -7,7 +7,7 @@ from . import views
 
 
 urlpatterns=[
-    url(r'^$', views.home),
+    url(r'', views.home),
     url(r'^sign-up$', views.signup),
    ]
 if settings.DEBUG:
