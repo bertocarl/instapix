@@ -30,7 +30,7 @@ def signup_view(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             #saving data to DB
-            user = User(name=name, password=make_password(password), email=email, username=username)
+            user = UserModel(name=name, password=make_password(password), email=email, username=username)
             user.save()
             return render(request, 'success.html')
             #return redirect('login/')
@@ -47,11 +47,11 @@ def login_view(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            user = User.objects.filter(username=username).first()
+            user = UserModel.objects.filter(username=username).first()
 
             if user:
                 # Check for the password
-                print make_password(password), user.password
+                
                 if not check_password(password, user.password):
                     dict['message'] = 'Incorrect Password! Please try again!'
                 else:
@@ -149,17 +149,3 @@ def comment_view(request):
             return redirect('/feed/')
     else:
         return redirect('/login')
-
-
-
-
-#For validating the session
-def check_validation(request):
-    if request.COOKIES.get('session_token'):
-        session = SessionToken.objects.filter(session_token=request.COOKIES.get('session_token')).first()
-        if session:
-            time_to_live = session.created_on + timedelta(days=1)
-            if time_to_live > timezone.now():
-                return session.user
-    else:
-        return None
