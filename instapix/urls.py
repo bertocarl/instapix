@@ -8,7 +8,9 @@ from . import views
 
 urlpatterns=[
     url(r'', views.login_view),
-    url(r'^login/$', views.login),
+    url(r'^signup/', views.signup_view),
+    url(r'^feeds/', views.feed_view),
+    url(r'^post/', views.post_view),
    ]
 if settings.DEBUG:
     urlpatterns+= static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT) 

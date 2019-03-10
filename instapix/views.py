@@ -33,11 +33,11 @@ def signup_view(request):
             user = UserModel(name=name, password=make_password(password), email=email, username=username)
             user.save()
             return render(request, 'success.html')
-            #return redirect('login/')
+            return redirect('login/')
     else:
         form = SignUpForm()
 
-    return render(request, 'index.html', {'form' : form})
+    return render(request, 'sign-up.html', {'form' : form})
 
 
 def login_view(request):
