@@ -8,7 +8,7 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.username} Profile'
 
-class PostModel(models.Model):
+class Post(models.Model):
 	user = models.ForeignKey(User)
 	image = models.FileField(upload_to='user_images')
 	image_url = models.CharField(max_length=255)
@@ -26,16 +26,17 @@ class PostModel(models.Model):
 	def comments(self):
 		return CommentModel.objects.filter(post=self).order_by('created_on')
 
-class LikeModel(models.Model):
+    
+class Like(models.Model):
 	user = models.ForeignKey(User)
-	post = models.ForeignKey(PostModel)
+	post = models.ForeignKey(Post)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)
 
 
-class CommentModel(models.Model):
+class Comment(models.Model):
 	user = models.ForeignKey(User)
-	post = models.ForeignKey(PostModel)
+	post = models.ForeignKey(Post)
 	comment_text = models.CharField(max_length=555)
 	created_on = models.DateTimeField(auto_now_add=True)
 	updated_on = models.DateTimeField(auto_now=True)

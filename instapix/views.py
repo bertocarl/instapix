@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect
-from .forms import SignUpForm, LoginForm, PostForm, LikeForm, CommentForm
-from .models import User, PostModel, LikeModel, CommentModel
+from .forms import PostForm, LikeForm, CommentForm
+from .models import User, Post, Like, Comment
 from django.contrib.auth import authenticate, login, logout as dlogout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView
+
 
 
 def profile(request, username):
@@ -21,23 +25,22 @@ def profile(request, username):
 	else:
 		return redirect(home)
 
-def signup_view(request):
-    if request.method == "POST":
-        form = SignUpForm(request.POST)
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            name = form.cleaned_data['name']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            #saving data to DB
-            user = UserModel(name=name, password=make_password(password), email=email, username=username)
-            user.save()
-            return render(request, 'success.html')
-            return redirect('login/')
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Your account has been created! You are now able to log in')
+            return redirect('login')
     else:
-        form = SignUpForm()
+        form = UserRegisterForm()
+    return render(request, 'users/register.html', {'form': form})
 
-    return render(request, 'sign-up.html', {'form' : form})
+
+@login_required
+def profile(request):
+    return render(request, 'users/profile.html')
 
 
 def login_view(request):
@@ -66,7 +69,7 @@ def login_view(request):
 
     dict['form'] = form
     return render(request, 'login.html', dict)
-
+@login_required
 def post_view(request):
     user = check_validation(request)
 
@@ -89,11 +92,11 @@ def post_view(request):
 
         else:
             form = PostForm()
-        return render(request, 'post.html', {'form' : form})
+        return render(request, 'index.html', {'form' : form})
     else:
         return redirect('/login/')
 
-
+@login_required
 def feed_view(request):
     user = check_validation(request)
     if user:
@@ -149,3 +152,6 @@ def comment_view(request):
             return redirect('/feed/')
     else:
         return redirect('/login')
+# class InstapixListView(ListView):
+#     model = Post
+#     template_name ='home.html'

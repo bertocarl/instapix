@@ -1,0 +1,46 @@
+{% load staticfiles %}
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Instagram</title>
+	
+	<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico.png' %}" sizes="16x16">
+	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Tangerine">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+	    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script type='text/javascript' src='{% static 'js/index.js' %}'></script>
+
+</head>
+<body>
+	<section id="content">
+		<form action="">
+			<h2>Instagram</h2>
+			<div id="password_username">
+				<input type="text" placeholder="Phone number, username or email" required="" id="username"/>
+				<input type="password" placeholder="Password" required="" id="password"/>
+			</form>
+				<input type="submit" value="Log in" id="submit"/>
+				<p><center>OR</center></p>
+				<img src=""><a href="">Login with Facebook</a><br>
+				<br>
+				<a href="https://www.instagram.com/accounts/password/reset/" id="lnkforget">Forgot password?</a>
+			</div>
+	</section>
+		<div id = "no_account">
+				<h4>Don't have an account?<a href="{{ register }}"> Sign up</a></h4>
+			</div>
+		<div id="get_app">
+		<h3>Get the app.</h3>
+		</div>
+		<br>
+
+	<div id="photos">
+			<a href="https://itunes.apple.com/app/instagram/id389801252?mt=8" target="_blank"><img src="http://gtpie.com/wp-content/uploads/2015/07/appStoreIcon.png" width="127" height="40"></a>
+			<a href="https://play.google.com/store/apps/details?id=com.instagram.android&referrer=utm_source%3Dinstagramweb%26utm_campaign%3DloginPage%26utm_medium%3Dbadge" target="_blank"><img src="http://www.codecu.org/Images/2016_05_googlePlay.png" width="127" height="40"></a>
+            <a href="https://www.microsoft.com/en-us/p/instagram/9nblggh5l9xt" target="_blank"><img src=</a>
+	</div>
+		
+</body>
+</html>
