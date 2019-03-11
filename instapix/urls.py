@@ -9,9 +9,8 @@ from .models import Post
 # from django.urls import path
 
 urlpatterns=[
-    # url(r'^', views.InstapixListViews.as_views(), name='home'),
-    # url(r'^feeds/', views.feed_view),
-    # url(r'^post/', views.post_view),
+    url(r'^home/', views.feed_view),
+    url(r'^post/', views.post_view),
     
    ]
 if settings.DEBUG:

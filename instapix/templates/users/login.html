@@ -1,16 +1,25 @@
 {% load staticfiles %}
-<html>
+<html lang="en" class="no-js not-logged-in client-root">
 <head>
-	<meta charset="UTF-8">
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Instagram</title>
-	
+	<meta name="robots" content="noimageindex, noarchive">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+    <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <link rel="manifest" href="https://www.instagram.com/data/manifest.json">
 	<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico.png' %}" sizes="16x16">
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Tangerine">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
-	    
+	<link rel="stylesheet" type="text/css" href="{% static 'js/index.js' %}">
+	 
+	
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
-<script type='text/javascript' src='{% static 'js/index.js' %}'></script>
+<!-- <script type='text/javascript' src='{% static 'js/index.js' %}'></script> -->
 
 </head>
 <body>
@@ -21,7 +30,7 @@
 				<input type="text" placeholder="Phone number, username or email" required="" id="username"/>
 				<input type="password" placeholder="Password" required="" id="password"/>
 			</form>
-				<input type="submit" value="Log in" id="submit"/>
+				<input type="submit" value="Log in" id="submit" onclick="users/login.html">
 				<p><center>OR</center></p>
 				<img src=""><a href="">Login with Facebook</a><br>
 				<br>
@@ -29,18 +38,25 @@
 			</div>
 	</section>
 		<div id = "no_account">
-				<h4>Don't have an account?<a href="{{ register }}"> Sign up</a></h4>
+				<h4>Don't have an account?<a href=""> Sign up</a></h4>
 			</div>
 		<div id="get_app">
 		<h3>Get the app.</h3>
 		</div>
 		<br>
-
-	<div id="photos">
-			<a href="https://itunes.apple.com/app/instagram/id389801252?mt=8" target="_blank"><img src="http://gtpie.com/wp-content/uploads/2015/07/appStoreIcon.png" width="127" height="40"></a>
-			<a href="https://play.google.com/store/apps/details?id=com.instagram.android&referrer=utm_source%3Dinstagramweb%26utm_campaign%3DloginPage%26utm_medium%3Dbadge" target="_blank"><img src="http://www.codecu.org/Images/2016_05_googlePlay.png" width="127" height="40"></a>
-            <a href="https://www.microsoft.com/en-us/p/instagram/9nblggh5l9xt" target="_blank"><img src=</a>
-	</div>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
 		
+	<div id="photos">
+			<a href="https://itunes.apple.com/app/instagram/id389801252?mt=8" target="_blank"><img src="http://gtpie.com/wp-content/uploads/2015/07/appStoreIcon.png" width="130" height="35"></a>
+			<a href="https://play.google.com/store/apps/details?id=com.instagram.android&referrer=utm_source%3Dinstagramweb%26utm_campaign%3DloginPage%26utm_medium%3Dbadge" target="_blank"><img src="http://www.codecu.org/Images/2016_05_googlePlay.png" width="130" height="35"></a>
+            <a href="https://www.microsoft.com/en-us/p/instagram/9nblggh5l9xt" target="_blank"><img src="" width="130" height="35"></a>
+	</div>
+
+
+	<!-- <footer id="foot"> ABOUT US SUPPORT PRESS API JOBS PRIVACY TERMS DIRECTORY PROFILES HASHTAGS LANGUAGE              ©2019 INSTAGRAM</footer>		 -->
 </body>
 </html>

@@ -65,10 +65,11 @@
       position: bottom;
       margin-bottom: 100 auto;
       text-align: center;
-      width: 100%;
+      width: 110%;
       bottom: 50%; 
       float: bottom;
-           
+      
+        
       
     }
 
@@ -147,4 +148,11 @@ width: 85%;
 padding: 15px 20px 30px 15px;
 text-align: center;
 left: 3%;
+}
+#foot a,p{
+  font: san serif;
+  font-size: 8px;
+
+  
+  
 }

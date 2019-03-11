@@ -25,51 +25,8 @@ def profile(request, username):
 	else:
 		return redirect(home)
 
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Your account has been created! You are now able to log in')
-            return redirect('login')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'users/register.html', {'form': form})
 
-
-@login_required
-def profile(request):
-    return render(request, 'users/profile.html')
-
-
-def login_view(request):
-    dict = {}
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = UserModel.objects.filter(username=username).first()
-
-            if user:
-                # Check for the password
-                
-                if not check_password(password, user.password):
-                    dict['message'] = 'Incorrect Password! Please try again!'
-                else:
-                    token = SessionToken(user=user)
-                    token.create_token()
-                    token.save()
-                    response = redirect('feed/')
-                    response.set_cookie(key='session_token', value=token.session_token)
-                    return response
-    else:
-        form = LoginForm()
-
-    dict['form'] = form
-    return render(request, 'login.html', dict)
-@login_required
+@login_required()
 def post_view(request):
     user = check_validation(request)
 
@@ -152,6 +109,3 @@ def comment_view(request):
             return redirect('/feed/')
     else:
         return redirect('/login')
-# class InstapixListView(ListView):
-#     model = Post
-#     template_name ='home.html'
