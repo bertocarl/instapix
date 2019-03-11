@@ -4,13 +4,13 @@ from django.contrib.auth import views
 from django.shortcuts import render
 from django.conf.urls.static import static
 from . import views
-# from django.views.generic import ListView
 from .models import Post
 # from django.urls import path
 
 urlpatterns=[
-    url(r'^home/', views.feed_view),
+    
     url(r'^post/', views.post_view),
+    url(r'^register/', views.register, name='register'),
     
    ]
 if settings.DEBUG:
