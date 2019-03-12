@@ -171,7 +171,7 @@ def search_results(request):
         return render(request,'search.html',{"message":message,"users":searched_users})
 
     else:
-        message="You haven't searched for any term"
+        message="Please enter a search !!"
         return render(request,'search.html',{"message":message})
 
 @login_required(login_url='/accounts/login/')
