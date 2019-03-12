@@ -12,7 +12,7 @@ from django.db.models import Q
 
 
 # Create your views here.
-def timeline(request):
+def home(request):
     current_user=request.user
     posts= Post.objects.all()
     profiles= Profile.objects.all()
@@ -20,7 +20,7 @@ def timeline(request):
     comments=Comment.objects.all()
 
 
-    return render(request,'timeline.html',{"posts":posts,"profiles":profiles,"form":form,"comments":comments})
+    return render(request,'home.html',{"posts":posts,"profiles":profiles,"form":form,"comments":comments})
 
 @login_required(login_url='/accounts/login/')
 def new_location(request):
@@ -53,7 +53,7 @@ def new_post(request):
 
             post.save()
 
-        return redirect('Timeline')
+        return redirect('Home')
 
     else:
         form = PostForm()
@@ -68,7 +68,7 @@ def profile(request):
     comments=Comment.objects.all()
     comment_number=len(comments)
     print(current_user)
-    # print(current_user_id)
+   
 
     post_id = None
     if request.method == 'GET':
