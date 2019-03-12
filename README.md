@@ -41,7 +41,7 @@ Then: User session is ended<br>
 
 
 ### Technologies Used
-* Atom was the source code editor of choice.
+* Vscode was the source code editor of choice.
 * Git and Github were used as my local and online repositories respectively.
 * Django was used as the framework of choice
 * Heroku was used in deploying the live site

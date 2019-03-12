@@ -61,16 +61,12 @@ class Profile(models.Model):
 class Comment(models.Model):
     comment = models.CharField(max_length=300)
     username = models.ForeignKey(User,on_delete=models.CASCADE)
-    # post = models.ForeignKey(Post,on_delete=models.CASCADE)
     post = models.IntegerField()
 
     def save_comment(self):
         self.save()
 
-    # @classmethod
-    # def delete_comment(self):
-    #     self.delete()
-    #
+
 class Followers(models.Model):
     username= models.ForeignKey(User,on_delete=models.CASCADE)
-    user = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
