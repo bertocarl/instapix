@@ -5,11 +5,6 @@ from django.db.models import Q
 
 import datetime as dt
 
-Gender=(
-    ('Male','Male'),
-    ('Female','Female'),
-)
-# Create your models here.
 class Location(models.Model):
     location = models.CharField(max_length=100)
 
@@ -27,30 +22,32 @@ class Location(models.Model):
         cls.objects.filter(location=location).delete()
 
 class Post(models.Model):
-    profile_pic = models.ImageField(upload_to = 'profilepics/')
-    caption = models.CharField(max_length=3000)
-    username = models.ForeignKey(User,on_delete=models.CASCADE)
-    post = models.ImageField(upload_to='posts/')
-    likes = models.IntegerField()
+    username = models.ForeignKey(User)
+    image = models.FileField(upload_to='user_images')
+    image_url = models.CharField(max_length=255)
+    caption = models.CharField(max_length=240)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+    has_liked = False
 
-    location = models.ForeignKey(Location,on_delete=models.CASCADE)
 
-    post_date=models.DateTimeField(auto_now_add=True)
+    @property
+    def like_count(self):
+        return len(LikeModel.objects.filter(post=self))
 
-    def __str__(self):
-        return self.username
+    @property
+    def comments(self):
+        return CommentModel.objects.filter(post=self).order_by('created_on')
 
 class Profile(models.Model):
-    profile_pic = models.ImageField(upload_to='profilepics/')
+    username = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_pic = models.ImageField(default='default.jpg', upload_to='profiles_pics')
     bio = HTMLField()
     name = models.CharField(max_length=255)
-    username = models.ForeignKey(User,on_delete=models.CASCADE)
-    email= models.EmailField()
     phonenumber = models.IntegerField()
-    gender = models.CharField(max_length=15,choices=Gender,default="Male")
-
     def __str__(self):
-        return self.username
+        return f'{self.user.username} Profile'
+
 
     @classmethod
     def search_profile(cls,search_term):
@@ -58,15 +55,23 @@ class Profile(models.Model):
 
         return profiles
 
-class Comment(models.Model):
-    comment = models.CharField(max_length=300)
-    username = models.ForeignKey(User,on_delete=models.CASCADE)
-    post = models.IntegerField()
-
-    def save_comment(self):
-        self.save()
-
-
 class Followers(models.Model):
     username= models.ForeignKey(User,on_delete=models.CASCADE)
     username = models.CharField(max_length=100)
+
+class Like(models.Model):
+    username = models.ForeignKey(User)
+    post = models.ForeignKey(Post)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+
+class Comment(models.Model):
+    username = models.ForeignKey(User)
+    post = models.ForeignKey(Post)
+    comment_text = models.CharField(max_length=555)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    def save_comment(self):
+        self.save()
