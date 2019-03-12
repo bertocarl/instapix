@@ -5,27 +5,27 @@ import datetime as dt
 # Create your tests here.
 class LocationTestClass(TestCase):
     def setUp(self):
-        self.Moringa = Location(location='Moringa')
+        self.Nairobi = Location(location='Nairobi')
 
     def test_instance(self):
-        self.assertTrue(isinstance(self.Moringa,Location))
+        self.assertTrue(isinstance(self.Nairobi,Location))
 
     def tearDown(self):
         Location.objects.all().delete()
 
     def test_save_method(self):
-        self.Moringa.save_location()
+        self.Nairobi.save_location()
         locations = Location.objects.all()
         self.assertTrue(len(locations)>0)
 
     def test_delete_method(self):
-        self.Moringa.delete_location('Moringa')
+        self.Nairobi.delete_location('Nairobi')
         locations = Location.objects.all()
         self.assertTrue(len(locations)==0)
 
 class CommentTestClass(TestCase):
     def setUp(self):
-        self.new_user = User.objects.create_user(username='donald',password='password123')
+        self.new_user = User.objects.create_user(username='berto',password='fiddlediddle')
         self.comment = Comment(comment='Test Comment',username=self.new_user,post=1)
 
     def test_instance(self):
