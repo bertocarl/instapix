@@ -6,7 +6,16 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView
 
+# Create your views here.
+def index(request):
+    current_user=request.user
+    posts= Post.objects.all()
+    profiles= Profile.objects.all()
+    form=CommentForm()
+    comments=Comment.objects.all()
 
+
+    return render(request,'index.html',{"post":post,"profile":profile,"form":form,"comment":comment})
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -65,7 +74,7 @@ def post_view(request):
             form = PostForm()
         return render(request, 'index.html', {'form' : form})
     else:
-        return redirect('/login/')
+        return redirect('accounts/login/')
 
 @login_required
 def feed_view(request):
@@ -84,7 +93,7 @@ def feed_view(request):
         return render(request, 'feed.html', {'posts': posts})
     else:
 
-        return redirect('/login/')
+        return redirect('accounts/login/')
 
 
 
