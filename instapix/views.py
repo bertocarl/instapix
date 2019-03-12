@@ -12,7 +12,7 @@ from django.db.models import Q
 
 
 # Create your views here.
-# @login_required(login_url='/accounts/login')
+@login_required
 def home(request):
     current_user=request.user
     posts= Post.objects.all()
@@ -207,3 +207,16 @@ def change_profile(request,username):
         form = ProfileForm()
 
     return render(request,'change_profile.html',{"form":form})
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration_form.html', {'form': form})
