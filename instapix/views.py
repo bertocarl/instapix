@@ -92,7 +92,7 @@ def profile(request):
         title = profile.name
         username = profile.username
         post_number= len(posts)
-        # print(post_number)
+        
 
     except ObjectDoesNotExist:
         return redirect('edit-profile')
