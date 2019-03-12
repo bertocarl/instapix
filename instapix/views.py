@@ -1,13 +1,18 @@
-from django.shortcuts import render, redirect
-from .forms import PostForm, LikeForm, CommentForm
-from .models import User, Post, Like, Comment
-from django.contrib.auth import authenticate, login, logout as dlogout
-from django.contrib import messages
+from django.shortcuts import render,redirect
+from django.http import HttpResponse,Http404,HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
+from django.core.exceptions import ObjectDoesNotExist
+from .models import Post,Profile,Comment
+from .forms import PostForm,LocationForm,ProfileForm,CommentForm
+from decouple import config,Csv
+import datetime as dt
+from django.http import JsonResponse
+import json
+from django.db.models import Q
+
 
 # Create your views here.
-def index(request):
+def timeline(request):
     current_user=request.user
     posts= Post.objects.all()
     profiles= Profile.objects.all()
@@ -15,120 +20,189 @@ def index(request):
     comments=Comment.objects.all()
 
 
-    return render(request,'index.html',{"post":post,"profile":profile,"form":form,"comment":comment})
-def register(request):
+    return render(request,'timeline.html',{"posts":posts,"profiles":profiles,"form":form,"comments":comments})
+
+@login_required(login_url='/accounts/login/')
+def new_location(request):
+    if request.method =='POST':
+        form=LocationForm(request.POST,request.FILES)
+        if form.is_valid():
+            location = form.save(commit=False)
+            location.save()
+
+        return redirect('new-post')
+
+    else:
+        form = LocationForm()
+
+    return render(request,'new_location.html',{"form":form})
+
+@login_required(login_url='/accounts/login/')
+def new_post(request):
+    current_user = request.user
+    profile = Profile.objects.get(username=current_user)
+
     if request.method == 'POST':
-        form = SignUpForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            raw_password = form.cleaned_data.get('password2')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
+            post = form.save(commit=False)
+            post.username = current_user
+            post.profile_pic = profile.profile_pic
+
+            post.likes=0
+
+            post.save()
+
+        return redirect('Timeline')
+
     else:
-        form = SignUpForm()
-    return render(request, 'users/register.html', {'form': form})
+        form = PostForm()
 
-def profile(request, username):
-	if User.objects.filter(username=username).exists():
-		u = User.objects.filter(username=username)[0]
-		if not Followers.objects.filter(user=username, follower=request.user.username).exists():
-			following = "Follow"
-		else:
-			following = "Unfollow"
+    return render(request,'new_post.html',{"form":form})
 
-		if u.profilepic == "":
-			u.profilepic = "static/assets/img/default.png"
-		context = { "ProfilePic": u.profilepic, "whosprofile": username, "logged_in_as": request.user.username, "following": following }
-		if request.user.is_authenticated:
-			return render(request, 'logged-in-profile.html', context)
-		return render(request, 'profile.html', context)
-	else:
-		return redirect(home)
+@login_required(login_url='/accounts/login/')
+def profile(request):
+    current_user = request.user
+    current_user_id=request.user.id
+    form=CommentForm()
+    comments=Comment.objects.all()
+    comment_number=len(comments)
+    print(current_user)
+    # print(current_user_id)
 
+    post_id = None
+    if request.method == 'GET':
+        post_id = request.GET.get('post_id')
 
-@login_required()
-def post_view(request):
-    user = check_validation(request)
+    likes = 0
+    if post_id:
+        post = Post.objects.get(id=int(post_id))
+        if post:
+            likes = post.likes + 1
+            post.likes =  likes
+            post.save()
+            print(likes)
 
-    if user:
-        if request.method == 'POST':
-            form = PostForm(request.POST, request.FILES)
-            if form.is_valid():
-                image = form.cleaned_data.get('image')
-                caption = form.cleaned_data.get('caption')
-                post = PostModel(user=user, image=image, caption=caption)
-                post.save()
+        return redirect('profile.html')
 
-                path = str(BASE_DIR + post.image.url)
+    try:
+        profile = Profile.objects.get(username=current_user)
+        posts = Post.objects.filter(username_id=current_user_id)
+        title = profile.name
+        username = profile.username
+        post_number= len(posts)
+        # print(post_number)
 
-                client = ImgurClient('309da390c4f405d', '0b1e627021ab1fee1c9ae9ed90eaf1565ee0e0f1')
-                post.image_url = client.upload_from_path(path,anon=True)['link']
-                post.save()
-
-                return redirect('/feed/')
-
-        else:
-            form = PostForm()
-        return render(request, 'index.html', {'form' : form})
-    else:
-        return redirect('accounts/login/')
-
-@login_required
-def feed_view(request):
-    user = check_validation(request)
-    if user:
-
-        posts = PostModel.objects.all().order_by('-created_on',)
-
-        for post in posts:
-
-            existing_like = LikeModel.objects.filter(post_id=post.id, user=user).first()
-            if existing_like:
-                post.has_liked = True
+    except ObjectDoesNotExist:
+        return redirect('edit-profile')
 
 
-        return render(request, 'feed.html', {'posts': posts})
-    else:
-
-        return redirect('accounts/login/')
+    return render(request,"profile.html",{"profile":profile,"posts":posts,"form":form,"post_number":post_number,"title":title,"username":username,"comments":comments,"comment_number":comment_number})
 
 
-
-
-def like_view(request):
-    user = check_validation(request)
-    if user and request.method == 'POST':
-        form = LikeForm(request.POST)
+@login_required(login_url='/accounts/login/')
+def edit_profile(request):
+    current_user=request.user
+    if request.method =='POST':
+        form=ProfileForm(request.POST,request.FILES)
         if form.is_valid():
-            post_id = form.cleaned_data.get('post').id
-            existing_like = LikeModel.objects.filter(post_id=post_id, user=user).first()
-            if not existing_like:
-                LikeModel.objects.create(post_id=post_id, user=user)
-            else:
-                existing_like.delete()
-
-            return redirect('/feed/')
+            profile=form.save(commit=False)
+            profile.username = current_user
+            profile.save()
 
     else:
-        return redirect('/login/')
+        form=ProfileForm()
+
+    return render(request,'edit_profile.html',{"form":form})
+
+def comment(request):
+    print("AJAX is working")
+
+    comment = request.GET.get('comment')
+    post = request.GET.get('post')
+    username = request.user
+
+    comment = Comment(comment=comment,post=post,username=username)
+    comment.save()
+
+    recent_comment= f'{Comment.objects.all().last().comment}'
+    recent_comment_user = f'{Comment.objects.all().last().username}'
+    data= {
+        'recent_comment': recent_comment,
+        'recent_comment_user':recent_comment_user
+    }
+
+    return JsonResponse(data)
+
+@login_required(login_url='/accounts/login/')
+def explore(request):
+    posts = Post.objects.all()
+    form=CommentForm()
+    comments=Comment.objects.all()
 
 
-def comment_view(request):
-    user = check_validation(request)
-    if user and request.method == 'POST':
-        form = CommentForm(request.POST)
+    return render(request,"explore.html",{"posts":posts,"form":form,"comments":comments})
+
+
+@login_required(login_url='/accounts/login/')
+def like(request):
+    post_id = None
+    if request.method == 'GET':
+        post_id = request.GET.get('post_id')
+
+    likes = 0
+    if post_id:
+        post = Post.objects.get(id=int(post_id))
+        if post:
+            likes = post.likes + 1
+            post.likes =  likes
+            post.save()
+            print(likes)
+    return HttpResponse(likes)
+
+@login_required(login_url='/accounts/login/')
+def search_results(request):
+    if 'user' in request.GET and request.GET["user"]:
+        search_term = request.GET.get("user")
+        searched_users = Profile.search_profile(search_term)
+        message=f"{search_term}"
+
+        return render(request,'search.html',{"message":message,"users":searched_users})
+
+    else:
+        message="You haven't searched for any term"
+        return render(request,'search.html',{"message":message})
+
+@login_required(login_url='/accounts/login/')
+def userprofile(request,profile_id):
+    current_user=request.user
+    form =CommentForm()
+    comments=Comment.objects.all()
+
+    try:
+        all_posts=Post.objects.all()
+        profile = Profile.objects.get(id=profile_id)
+        prof_username = profile.username
+        posts = Post.objects.filter(username=prof_username)
+    except:
+        raise ObjectDoesNotExist()
+    return render(request,"user-profile.html",{"profile":profile,"posts":posts,"form":form,"comments":comments})
+
+
+@login_required(login_url='/accounts/login/')
+def change_profile(request,username):
+    current_user = request.user
+    if request.method == 'POST':
+        form = ProfileForm(request.POST,request.FILES)
         if form.is_valid():
-            post_id = form.cleaned_data.get('post').id
-            comment_text = form.cleaned_data.get('comment_text')
-            comment = CommentModel.objects.create(user=user, post_id=post_id, comment_text=comment_text)
-            comment.save()
-            # TODO: ADD MESSAGE TO INDICATE SUCCESS
-            return redirect('/feed/')
-        else:
-            # TODO: ADD MESSAGE FOR FAILING TO POST COMMENT
-            return redirect('/feed/')
+            caption = form.save(commit=False)
+            caption.username = current_user
+            caption.save()
+        return redirect('index')
+    elif Profile.objects.get(username=current_user):
+        profile = Profile.objects.get(username=current_user)
+        form = ProfileForm(instance=profile)
     else:
-        return redirect('/login')
+        form = ProfileForm()
+
+    return render(request,'change_profile.html',{"form":form})

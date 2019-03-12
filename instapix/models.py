@@ -1,42 +1,76 @@
 from django.db import models
 from django.contrib.auth.models import User
+from tinymce.models import HTMLField
+from django.db.models import Q
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    image = models.ImageField(default='default.jpg', upload_to='profiles_pics')
+import datetime as dt
+
+Gender=(
+    ('Male','Male'),
+    ('Female','Female'),
+)
+# Create your models here.
+class Location(models.Model):
+    location = models.CharField(max_length=100)
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return self.location
+
+    class Meta:
+        ordering = ['location']
+
+    def save_location(self):
+        self.save()
+
+    @classmethod
+    def delete_location(cls,location):
+        cls.objects.filter(location=location).delete()
 
 class Post(models.Model):
-	user = models.ForeignKey(User)
-	image = models.FileField(upload_to='user_images')
-	image_url = models.CharField(max_length=255)
-	caption = models.CharField(max_length=240)
-	created_on = models.DateTimeField(auto_now_add=True)
-	updated_on = models.DateTimeField(auto_now=True)
-	has_liked = False
+    profile_pic = models.ImageField(upload_to = 'profilepics/')
+    caption = models.CharField(max_length=3000)
+    username = models.ForeignKey(User,on_delete=models.CASCADE)
+    post = models.ImageField(upload_to='posts/')
+    likes = models.IntegerField()
 
+    location = models.ForeignKey(Location,on_delete=models.CASCADE)
 
-	@property
-	def like_count(self):
-		return len(LikeModel.objects.filter(post=self))
+    post_date=models.DateTimeField(auto_now_add=True)
 
-	@property
-	def comments(self):
-		return CommentModel.objects.filter(post=self).order_by('created_on')
+    def __str__(self):
+        return self.username
 
-    
-class Like(models.Model):
-	user = models.ForeignKey(User)
-	post = models.ForeignKey(Post)
-	created_on = models.DateTimeField(auto_now_add=True)
-	updated_on = models.DateTimeField(auto_now=True)
+class Profile(models.Model):
+    profile_pic = models.ImageField(upload_to='profilepics/')
+    bio = HTMLField()
+    name = models.CharField(max_length=255)
+    username = models.ForeignKey(User,on_delete=models.CASCADE)
+    email= models.EmailField()
+    phonenumber = models.IntegerField()
+    gender = models.CharField(max_length=15,choices=Gender,default="Male")
 
+    def __str__(self):
+        return self.username
+
+    @classmethod
+    def search_profile(cls,search_term):
+        profiles = cls.objects.filter(Q(username__username=search_term) | Q(name__icontains=search_term))
+
+        return profiles
 
 class Comment(models.Model):
-	user = models.ForeignKey(User)
-	post = models.ForeignKey(Post)
-	comment_text = models.CharField(max_length=555)
-	created_on = models.DateTimeField(auto_now_add=True)
-	updated_on = models.DateTimeField(auto_now=True)
+    comment = models.CharField(max_length=300)
+    username = models.ForeignKey(User,on_delete=models.CASCADE)
+    # post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    post = models.IntegerField()
+
+    def save_comment(self):
+        self.save()
+
+    # @classmethod
+    # def delete_comment(self):
+    #     self.delete()
+    #
+class Followers(models.Model):
+    username= models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.CharField(max_length=100)

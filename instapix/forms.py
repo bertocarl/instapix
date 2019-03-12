@@ -1,40 +1,26 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from .models import User, Post, Like, Comment
-from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib.auth.models import User
+from .models import Post,Location,Profile,Comment
 
-
-
-class LoginForm(UserCreationForm):
+class LocationForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['username', 'password']
-
-class SignUpForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
-
-    class Meta:
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
+        model=Location
+        fields='__all__'
 
 class PostForm(forms.ModelForm):
     class Meta:
-        model = Post
-        fields=['image', 'caption']
+        model=Post
+        exclude=['username','post_date','likes','profile_pic']
 
 
-class LikeForm(forms.ModelForm):
-
+class ProfileForm(forms.ModelForm):
     class Meta:
-        model = Like
-        fields=['post']
-
+        model=Profile
+        exclude=['username']
 
 class CommentForm(forms.ModelForm):
-
     class Meta:
-        model = Comment
-        fields = ['comment_text', 'post']
+        model=Comment
+        exclude=['username','post']
+        widgets = {
+            'myfield': forms.TextInput(attrs={'class': 'myfieldclass'}),
+        }
