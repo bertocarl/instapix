@@ -22,7 +22,7 @@ class Location(models.Model):
         cls.objects.filter(location=location).delete()
 
 class Post(models.Model):
-    username = models.ForeignKey(User)
+    user = models.ForeignKey(User)
     image = models.FileField(upload_to='user_images')
     image_url = models.CharField(max_length=255)
     caption = models.CharField(max_length=240)
@@ -40,11 +40,11 @@ class Post(models.Model):
         return CommentModel.objects.filter(post=self).order_by('created_on')
 
 class Profile(models.Model):
-    username = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(default='default.jpg', upload_to='profiles_pics')
-    bio = HTMLField()
-    name = models.CharField(max_length=255)
-    phonenumber = models.IntegerField()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profiles_pics')
+    bio = models.TextField(blank="", default="")
+    name = models.CharField(max_length=255, default="", blank="")
+    # phonenumber = models.IntegerField(max_length=140, blank="",default="")
     def __str__(self):
         return f'{self.user.username} Profile'
 
@@ -56,18 +56,18 @@ class Profile(models.Model):
         return profiles
 
 class Followers(models.Model):
-    username= models.ForeignKey(User,on_delete=models.CASCADE)
-    username = models.CharField(max_length=100)
+    user= models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.CharField(max_length=100)
 
 class Like(models.Model):
-    username = models.ForeignKey(User)
+    user = models.ForeignKey(User)
     post = models.ForeignKey(Post)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
 
 
 class Comment(models.Model):
-    username = models.ForeignKey(User)
+    user = models.ForeignKey(User)
     post = models.ForeignKey(Post)
     comment_text = models.CharField(max_length=555)
     created_on = models.DateTimeField(auto_now_add=True)
