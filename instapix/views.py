@@ -9,6 +9,7 @@ import datetime as dt
 from django.http import JsonResponse
 import json
 from django.db.models import Q
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -87,10 +88,10 @@ def profile(request):
         return redirect('profile.html')
 
     try:
-        profile = Profile.objects.get(username=current_user)
-        posts = Post.objects.filter(username_id=current_user_id)
+        profile = Profile.objects.get(user=current_user)
+        posts = Post.objects.filter(user_id=current_user_id)
         title = profile.name
-        username = profile.username
+        username = profile.user.username
         post_number= len(posts)
         
 
@@ -165,7 +166,8 @@ def like(request):
 def search_results(request):
     if 'user' in request.GET and request.GET["user"]:
         search_term = request.GET.get("user")
-        searched_users = Profile.search_profile(search_term)
+        user = User.objects.filter(username=search_term)
+        searched_users = Profile.objects.filter(user=user)
         message=f"{search_term}"
 
         return render(request,'search.html',{"message":message,"users":searched_users})
@@ -220,3 +222,7 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'registration_form.html', {'form': form})
+
+# def register(request):
+
+#     return render(request, 'registration/registration-form.html')

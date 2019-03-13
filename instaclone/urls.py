@@ -19,6 +19,7 @@ from django.contrib.auth import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    # url(r'^register/', views.S, name='register'),
     url(r'^accounts/',include('registration.backends.simple.urls')),
     url(r'^logout/$',views.logout, {"next_page":'/'},name="logout"),
     url(r'', include('instapix.urls')),
