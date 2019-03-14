@@ -22,7 +22,7 @@
 <div class="card" style="width: 75rem;">
   <div class="custom-card-header">
   <div class="modal-image">
-    <img src="{{post.profile_pic.url}}?w=50&h=50&fit=crop" class="gallery-image" alt=""  width=8 height=8>
+    <img src="{{post.profile_pic.url}}?w=50&h=50&fit=crop" class="gallery-image" alt="">
   </div>
 
       <p class="username">{{post.username.username}}</p>
@@ -91,10 +91,10 @@
 
 <div class="col-md-2">
 <div class="panel" style="width: 30rem;">
-  <!-- <div class="custom-card-header"> -->
+  <div class="custom-card-header">
   <div class="panel-body">
     {% for profile in profiles%}
-    <!-- <div class="custom-card-header"> -->
+    <div class="custom-card-header"> 
 
     <div class="users-image">
       <img src="{{profile.profile_pic.url}}?w=50&h=50&fit=crop" class="gallery-image" alt=""  width=8 height=8>
@@ -114,6 +114,6 @@
 </div>
 
 
-<!-- </div> -->
+</div>
 </div>
 {% endblock %}

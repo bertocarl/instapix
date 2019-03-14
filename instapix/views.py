@@ -41,26 +41,24 @@ def new_location(request):
 
 @login_required(login_url='/accounts/login/')
 def new_post(request):
-    current_user = request.user
-    profile = Profile.objects.get(username=current_user)
+   user = request.user
+   if request.method == 'POST':
+      form = PostForm(request.POST,request.FILES)
+      if form.is_valid():
+         post = form.save(commit=False)
+         post.author = user.profile
+         post.save()
+         return redirect('home')
+   else:
+      form = PostForm()
 
-    if request.method == 'POST':
-        form = PostForm(request.POST, request.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.username = current_user
-            post.profile_pic = profile.profile_pic
 
-            post.likes=0
+   context = {
+      'form': form
+   }
 
-            post.save()
+   return render(request, 'new_post.html', context)
 
-        return redirect('Home')
-
-    else:
-        form = PostForm()
-
-    return render(request,'new_post.html',{"form":form})
 
 @login_required(login_url='/accounts/login/')
 def profile(request):
@@ -94,7 +92,6 @@ def profile(request):
         username = profile.user.username
         post_number= len(posts)
         
-
     except ObjectDoesNotExist:
         return redirect('edit-profile')
 
@@ -218,11 +215,8 @@ def register(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('home')
+            return redirect('login')
     else:
         form = UserCreationForm()
-    return render(request, 'registration_form.html', {'form': form})
+    return render(request, 'login.html', {'form': form})
 
-# def register(request):
-
-#     return render(request, 'registration/registration-form.html')
