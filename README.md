@@ -6,7 +6,7 @@ This python/django web-app was created as a clone of instagram.Developed during 
 This web-app allows a user to create a Profile,add a Location and Post that are all under his username allowing other users to vote for them.
 
 ## Setup/Installation Requirements
-* Live site can be accessed from the following link 
+* Live site can be accessed from the following link https://instapixel.herokuapp.com
 
 
 ### Known Bugs
@@ -44,7 +44,7 @@ Then: User session is ended<br>
 * Vscode was the source code editor of choice.
 * Git and Github were used as my local and online repositories respectively.
 * Django was used as the framework of choice
-* Heroku was used in deploying the live site
+* Heroku was used in deploying the live site https://instapixel.herokuapp.com
 
 
 ### Support and contact details
